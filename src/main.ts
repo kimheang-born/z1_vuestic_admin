@@ -3,14 +3,16 @@ import i18n from './i18n'
 import { createVuestic } from 'vuestic-ui'
 import { createGtm } from '@gtm-support/vue-gtm'
 
-import stores from './stores'
+// import stores from './stores' // pinia
+import store from './store' // vuex
 import router from './router'
 import vuesticGlobalConfig from './services/vuestic-ui/global-config'
 import App from './App.vue'
 
 const app = createApp(App)
 
-app.use(stores)
+// app.use(stores) // pinia
+app.use(store) // vuex
 app.use(router)
 app.use(i18n)
 app.use(createVuestic({ config: vuesticGlobalConfig }))
