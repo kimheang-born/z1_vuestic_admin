@@ -30,3 +30,5 @@ netlify.toml
 # Ignore lock files
 package-lock.json
 yarn.lock
+
+.env
