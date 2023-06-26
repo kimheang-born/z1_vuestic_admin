@@ -7,6 +7,8 @@ import Page404Layout from '../layouts/Page404Layout.vue'
 import RouteViewComponent from '../layouts/RouterBypass.vue'
 import UIRoute from '../pages/admin/ui/route'
 
+import store from '../store/index' // vuex
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/:catchAll(.*)',
@@ -21,6 +23,9 @@ const routes: Array<RouteRecordRaw> = [
         name: 'dashboard',
         path: 'dashboard',
         component: () => import('../pages/admin/dashboard/Dashboard.vue'),
+        meta: {
+          requiresAuth: true,
+        },
       },
       {
         name: 'statistics',
@@ -33,6 +38,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import('../pages/admin/statistics/charts/Charts.vue'),
             meta: {
               wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Charts',
+              requiresAuth: true,
             },
           },
           {
@@ -41,6 +47,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import('../pages/admin/statistics/progress-bars/ProgressBars.vue'),
             meta: {
               wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Progress-Bars',
+              requiresAuth: true,
             },
           },
         ],
@@ -56,6 +63,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import('../pages/admin/forms/form-elements/FormElements.vue'),
             meta: {
               wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/inputs',
+              requiresAuth: true,
             },
           },
           {
@@ -64,6 +72,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import('../pages/admin/forms/medium-editor/MediumEditor.vue'),
             meta: {
               wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Medium-Editor',
+              requiresAuth: true,
             },
           },
         ],
@@ -79,6 +88,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import('../pages/admin/maps/maplibre-maps/MapLibreMapsPage.vue'),
             meta: {
               wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Maps',
+              requiresAuth: true,
             },
           },
           {
@@ -87,6 +97,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import('../pages/admin/maps/yandex-maps/YandexMapsPage.vue'),
             meta: {
               wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Maps',
+              requiresAuth: true,
             },
           },
           {
@@ -95,6 +106,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import('../pages/admin/maps/leaflet-maps/LeafletMapsPage.vue'),
             meta: {
               wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Maps',
+              requiresAuth: true,
             },
           },
           {
@@ -103,6 +115,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import('../pages/admin/maps/bubble-maps/BubbleMapsPage.vue'),
             meta: {
               wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Maps',
+              requiresAuth: true,
             },
           },
           {
@@ -111,6 +124,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import('../pages/admin/maps/line-maps/LineMapsPage.vue'),
             meta: {
               wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Maps',
+              requiresAuth: true,
             },
           },
         ],
@@ -126,6 +140,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import('../pages/admin/tables/markup-tables/MarkupTables.vue'),
             meta: {
               wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Tables',
+              requiresAuth: true,
             },
           },
           {
@@ -134,6 +149,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import('../pages/admin/tables/data-tables/DataTables.vue'),
             meta: {
               wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Tables',
+              requiresAuth: true,
             },
           },
         ],
@@ -147,11 +163,17 @@ const routes: Array<RouteRecordRaw> = [
             name: '404-pages',
             path: '404-pages',
             component: () => import('../pages/admin/pages/404PagesPage.vue'),
+            meta: {
+              requiresAuth: true,
+            },
           },
           {
             name: 'faq',
             path: 'faq',
             component: () => import('../pages/admin/pages/FaqPage.vue'),
+            meta: {
+              requiresAuth: true,
+            },
           },
         ],
       },
@@ -215,6 +237,16 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   //  mode: process.env.VUE_APP_ROUTER_MODE_HISTORY === 'true' ? 'history' : 'hash',
   routes,
+})
+
+router.beforeEach((to, _, next) => {
+  if (to.meta.requiresAuth && !store.getters.isAuthenticated) {
+    next('/auth/login')
+  } else if (to.name === 'login' && store.getters.isAuthenticated) {
+    next('/admin/dashboard')
+  } else {
+    next()
+  }
 })
 
 export default router
