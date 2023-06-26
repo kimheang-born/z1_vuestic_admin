@@ -5,6 +5,7 @@
     "createNewAccount": "Create New Account",
     "email": "Email",
     "login": "Login",
+    "phoneNumber": "Phone Number",
     "password": "Password",
     "recover_password": "Recover password",
     "sign_up": "Sign Up",
